@@ -6,7 +6,6 @@ import scraperwiki
 import urllib2
 from datetime import datetime
 from bs4 import BeautifulSoup
-from dateutil.parser import parse
 from requests.exceptions import ChunkedEncodingError
 
 # Set up variables
