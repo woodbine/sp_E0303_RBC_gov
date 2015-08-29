@@ -6,6 +6,7 @@ import scraperwiki
 import urllib2
 from datetime import datetime
 from bs4 import BeautifulSoup
+from dateutil.parser import parse
 from requests.exceptions import ChunkedEncodingError
 
 # Set up variables
@@ -81,7 +82,10 @@ for block in blocks:
             csvMth = csvfiles[0][:3]
             csvYr = csvfiles[1]
             csvMth = convert_mth_strings(csvMth.upper())
-            filename = entity_id + "_" + csvYr + "_" + csvMth
+            if '_to_' or '-to-' in url:
+                filename = 'Q'+entity_id + "_" + csvYr + "_" + csvMth
+            else:
+                filename = entity_id + "_" + csvYr + "_" + csvMth
             todays_date = str(datetime.now())
             file_url = url.strip()
             validFilename = validateFilename(filename)
