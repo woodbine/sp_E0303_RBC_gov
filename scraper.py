@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 
 #### IMPORTS 1.0
@@ -39,22 +38,20 @@ def validateFilename(filename):
 
 def validateURL(url):
     try:
-        opener = urllib2.build_opener()
-        r = urllib2.Request(url)
-        response = urllib2.urlopen(r)
+        r = urllib2.urlopen(url)
         count = 1
-        while response.getcode() == 500 and count < 4:
+        while r.getcode() == 500 and count < 4:
             print ("Attempt {0} - Status code: {1}. Retrying.".format(count, r.status_code))
             count += 1
-            opener = urllib2.build_opener()
-            r = urllib2.Request(url)
+            r = urllib2.urlopen(url)
         sourceFilename = r.headers.get('Content-Disposition')
+
         if sourceFilename:
             ext = os.path.splitext(sourceFilename)[1].replace('"', '').replace(';', '').replace(' ', '')
         else:
             ext = os.path.splitext(url)[1]
-        validURL = response.getcode() == 200
-        validFiletype = ext in ['.csv', '.xls', '.xlsx']
+        validURL = r.getcode() == 200
+        validFiletype = ext in ['.csv', '.xls', '.xlsx', '.docx']
         return validURL, validFiletype
     except:
         print ("Error validating URL.")
