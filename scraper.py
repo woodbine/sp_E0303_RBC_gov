@@ -85,7 +85,7 @@ def convert_mth_strings ( mth_string ):
 #### VARIABLES 1.0
 
 entity_id = "E0303_RBC_gov"
-url = "http://beta.reading.gov.uk/spendingover500"
+url = "http://www.reading.gov.uk/article/5811/Council-Spending-Over-500"
 errors = 0
 data = []
 
@@ -97,29 +97,24 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 
-blocks = soup.find_all('div', attrs = {'class':'faqanswer'})
-for block in blocks:
-    links = block.find_all('a', href=True)
-    for link in links:
-        url = 'http://beta.reading.gov.uk/' +link['href']
-        csvfile = link.text
-        if '.pdf' not in url:
-            csvfiles = csvfile.split('500 ')[-1].replace('-', '').strip().split('to')[-1].strip().split('[')[0].strip().split(' ')
-            if len(csvfiles) == 1:
-                csvfiles.append('2012')
-            csvMth = csvfiles[0][:3]
-            csvYr = csvfiles[1]
-            csvMth = convert_mth_strings(csvMth.upper())
-            if '_to_' or '-to-' in url:
-                if '06' in csvMth:
-                    csvMth = 'Q2'
-                if '03' in csvMth:
-                    csvMth = 'Q1'
-                if '09' in csvMth:
-                    csvMth = 'Q3'
-                if '12' in csvMth:
-                    csvMth = 'Q4'
-            data.append([csvYr, csvMth, url])
+blocks = soup.find('div', attrs = {'id':'faqaccordion'})
+links = blocks.find_all('a', href=True)
+for link in links:
+    if '.csv' in link['href'] or '.xlsx' in link['href'] or '.xls' in link['href']:
+        url = 'http://www.reading.gov.uk/' +link['href']
+        title = link.text.strip()
+        csvYr = title.split('[')[0].strip()[-4:]
+        if 'January to March' in title:
+            csvMth = 'Q1'
+        if 'April to June' in title:
+            csvMth = 'Q2'
+        if 'July to September' in title:
+            csvMth = 'Q3'
+        if 'October to December' in title:
+            csvMth = 'Q4'
+        if 'June' in csvYr:
+            csvYr = '2012'
+        data.append([csvYr, csvMth, url])
 
 #### STORE DATA 1.0
 
