@@ -97,7 +97,7 @@ soup = BeautifulSoup(html, "lxml")
 
 #### SCRAPE DATA
 
-blocks = soup.find('div', attrs = {'id':'faqaccordion'})
+blocks = soup.find('div', attrs = {'id':'bodytext'})
 links = blocks.find_all('a', href=True)
 for link in links:
     if '.csv' in link['href'] or '.xlsx' in link['href'] or '.xls' in link['href']:
